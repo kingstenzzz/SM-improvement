@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math/big"
 	"reflect"
+
 	"testing"
 
 	"github.com/kingstenzzz/sm2-improvement/sm3"
