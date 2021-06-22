@@ -1,8 +1,7 @@
-module sm2-improvement/sm2
+module sm2
 
 go 1.16
 
-require "sm3" V0.0.0
+require github.com/kingstenzzz/sm2-improvement/sm3 v0.0.0
 
-replace "sm3" => "../sm3"
-
+replace github.com/kingstenzzz/sm2-improvement/sm3 => ../sm3
