@@ -134,6 +134,7 @@ func BenchmarkSM2(t *testing.B) {
 }
 
 func benchmarkEncrypt(b *testing.B, curve elliptic.Curve, plaintext string) {
+	b.ReportAllocs()
 	for i := 0; i < b.N; i++ {
 		priv, _ := ecdsa.GenerateKey(curve, rand.Reader)
 		Encrypt(rand.Reader, &priv.PublicKey, []byte(plaintext), nil)
@@ -141,11 +142,11 @@ func benchmarkEncrypt(b *testing.B, curve elliptic.Curve, plaintext string) {
 }
 
 func BenchmarkLessThan32_P256(b *testing.B) {
-	benchmarkEncrypt(b, elliptic.P256(), "test")
+	benchmarkEncrypt(b, elliptic.P256(), "encryption standard")
 }
 
 func BenchmarkLessThan32_P256SM2(b *testing.B) {
-	benchmarkEncrypt(b, P256(), "test")
+	benchmarkEncrypt(b, P256(), "encryption standard")
 }
 
 func BenchmarkMoreThan32_P256(b *testing.B) {
