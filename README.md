@@ -1,11 +1,4 @@
-<<<<<<< HEAD
-# sm2-improvement
 
-##Benchmark
-''''
-dsf
-''''
-=======
 #sm2-improvement
 
 **Benchmark**
