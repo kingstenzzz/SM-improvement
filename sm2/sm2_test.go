@@ -8,10 +8,8 @@ import (
 	"fmt"
 	"math/big"
 	"reflect"
-
 	"testing"
 
-	"github.com/kingstenzzz/sm2-improvement/sm3"
 )
 
 func Test_kdf(t *testing.T) {
@@ -90,6 +88,9 @@ func Test_encryptDecrypt(t *testing.T) {
 	}
 }
 
+
+
+
 func Test_signVerify(t *testing.T) {
 	priv, _ := GenerateKey(rand.Reader)
 	tests := []struct {
@@ -156,3 +157,5 @@ func BenchmarkMoreThan32_P256(b *testing.B) {
 func BenchmarkMoreThan32_P256SM2(b *testing.B) {
 	benchmarkEncrypt(b, P256(), "encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard")
 }
+
+

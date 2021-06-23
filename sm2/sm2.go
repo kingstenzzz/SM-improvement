@@ -11,7 +11,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/kingstenzzz/sm2-improvement/sm3"
 	"io"
 	"math/big"
 	"strings"
