@@ -6,12 +6,10 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"github.com/kingstenzzz/sm2-improvement/sm3"
 	"math/big"
 	"reflect"
 	"testing"
-	"github.com/kingstenzzz/sm2-improvement/sm3"
-
-
 )
 
 func Test_kdf(t *testing.T) {
