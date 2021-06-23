@@ -1,13 +1,5 @@
-module main
-require (
-	github.com/kingstenzzz/sm2-improvement v0.0.0
-	github.com/kingstenzzz/sm2-improvement/sm2 v0.0.0
-	github.com/kingstenzzz/sm2-improvement/sm3 v0.0.0
+module github.com/kingstenzzz/sm2-improvement
 
-)
-replace (
-	github.com/kingstenzzz/sm2-improvement/sm2 =>  ./sm2
-	github.com/kingstenzzz/sm2-improvement/sm3 =>  ./sm3
+require golang.org/x/sys v0.0.0-20210603125802-9665404d3644
 
-)
 go 1.16
