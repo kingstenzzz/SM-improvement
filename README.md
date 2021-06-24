@@ -31,8 +31,6 @@ BenchmarkSM2_MoreThan32_P256SM2-16  772	         1546936 ns/op	   84076 B/op	   
 
 
 ```Go
-package main
-
 import (
 	"bytes"
 	"crypto/rand"
