@@ -30,7 +30,7 @@ BenchmarkSM2_MoreThan32_P256SM2-16  772	         1546936 ns/op	   84076 B/op	   
 ## API使用示例
 
 
-~~~
+```Go
 package main
 
 import (
@@ -70,5 +70,5 @@ func main()  {
 	}
 	fmt.Println("签名验证成功")
 }
-~~~
+```
 
