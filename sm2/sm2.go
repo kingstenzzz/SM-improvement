@@ -11,7 +11,9 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/kingstenzzz/sm2-improvement/sm3"
+	//"github.com/kingstenzzz/sm2-improvement/sm3"
+	"github.com/tjfoc/gmsm/sm3"
+
 	"io"
 	"math/big"
 	"strings"
@@ -155,16 +157,16 @@ func randFieldElement(c elliptic.Curve, rand io.Reader) (k *big.Int, err error) 
 const maxRetryLimit = 100
 
 func kdf(z []byte, len int) ([]byte, bool) {
-	limit := (len + sm3.Size - 1) >> sm3.SizeBitSize
+	limit := (len + 31) >> 5
 	md := sm3.New()
 	var countBytes [4]byte
 	var ct uint32 = 1
-	k := make([]byte, len+sm3.Size-1)
+	k := make([]byte, len+31)
 	for i := 0; i < limit; i++ {
 		binary.BigEndian.PutUint32(countBytes[:], ct)
 		md.Write(z)
 		md.Write(countBytes[:])
-		copy(k[i*sm3.Size:], md.Sum(nil))
+		copy(k[i*32:], md.Sum(nil))
 		ct++
 		md.Reset()
 	}
@@ -255,7 +257,7 @@ func GenerateKey(rand io.Reader) (*PrivateKey, error) {
 // Decrypt sm2 decrypt implementation
 func Decrypt(priv *PrivateKey, ciphertext []byte) ([]byte, error) {
 	ciphertextLen := len(ciphertext)
-	if ciphertextLen <= 1+(priv.Params().BitSize/8)+sm3.Size {
+	if ciphertextLen <= 1+(priv.Params().BitSize/8)+32 {
 		return nil, errors.New("SM2: invalid ciphertext length")
 	}
 	curve := priv.Curve
@@ -270,7 +272,7 @@ func Decrypt(priv *PrivateKey, ciphertext []byte) ([]byte, error) {
 	x2, y2 := curve.ScalarMult(x1, y1, priv.D.Bytes())
 
 	//B4, calculate t=KDF(x2||y2, klen)
-	c2 := ciphertext[c3Start+sm3.Size:]
+	c2 := ciphertext[c3Start+32:]
 	msgLen := len(c2)
 	t, success := kdf(append(toBytes(curve, x2), toBytes(curve, y2)...), msgLen)
 	if !success {
@@ -284,9 +286,9 @@ func Decrypt(priv *PrivateKey, ciphertext []byte) ([]byte, error) {
 	}
 
 	//B6, calculate hash and compare it
-	c3 := ciphertext[c3Start : c3Start+sm3.Size]
+	c3 := ciphertext[c3Start : c3Start+32]
 	u := calculateC3(curve, x2, y2, msg)
-	for i := 0; i < sm3.Size; i++ {
+	for i := 0; i < 32; i++ {
 		if c3[i] != u[i] {
 			return nil, errors.New("SM2: invalid hash value")
 		}

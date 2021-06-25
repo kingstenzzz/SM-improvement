@@ -6,7 +6,10 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"github.com/kingstenzzz/sm2-improvement/sm3"
+	tjfoc_SM2 "github.com/tjfoc/gmsm/sm2"
+	"github.com/tjfoc/gmsm/sm3"
+
+	//"github.com/kingstenzzz/sm2-improvement/sm3"
 	"math/big"
 	"reflect"
 	"testing"
@@ -88,9 +91,6 @@ func Test_encryptDecrypt(t *testing.T) {
 	}
 }
 
-
-
-
 func Test_signVerify(t *testing.T) {
 	priv, _ := GenerateKey(rand.Reader)
 	tests := []struct {
@@ -106,7 +106,7 @@ func Test_signVerify(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			hash := sm3.Sum([]byte(tt.plainText))
+			hash := sm3.Sm3Sum([]byte(tt.plainText))
 			r, s, err := Sign(rand.Reader, &priv.PrivateKey, hash[:])
 			if err != nil {
 				t.Fatalf("sign failed %v", err)
@@ -126,7 +126,7 @@ func BenchmarkSM2(t *testing.B) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	hash := sm3.Sum(msg)
+	hash := sm3.Sm3Sum(msg)
 	r, s, err := Sign(rand.Reader, &priv.PrivateKey, hash[:])
 	t.ResetTimer()
 	for i := 0; i < t.N; i++ {
@@ -158,4 +158,32 @@ func BenchmarkMoreThan32_P256SM2(b *testing.B) {
 	benchmarkEncrypt(b, P256(), "encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard")
 }
 
+func BenchmarkTjfoc_MoreThan32_P256SM2(t *testing.B) {
+	t.ReportAllocs()
+	msg := []byte("encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard")
+	priv, err := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.ResetTimer()
+	for i := 0; i < t.N; i++ {
+		sign, _ := priv.Sign(nil, msg, nil) // 签名
 
+		priv.Verify(msg, sign) // 密钥验证
+	}
+}
+
+func BenchmarkTjfoc_LessThan32_P256SM2(t *testing.B) {
+	t.ReportAllocs()
+	msg := []byte("encryption standard")
+	priv, err := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.ResetTimer()
+	for i := 0; i < t.N; i++ {
+		sign, _ := priv.Sign(nil, msg, nil) // 签名
+
+		priv.Verify(msg, sign) // 密钥验证
+	}
+}
