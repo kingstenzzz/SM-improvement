@@ -6,13 +6,12 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	tjfoc_SM2 "github.com/tjfoc/gmsm/sm2"
-	"github.com/tjfoc/gmsm/sm3"
-
-	//"github.com/kingstenzzz/sm2-improvement/sm3"
 	"math/big"
 	"reflect"
 	"testing"
+
+	"github.com/kingstenzzz/sm2-improvement/sm3"
+	tjfoc_SM2 "github.com/tjfoc/gmsm/sm2" //引入同济库对比
 )
 
 func Test_kdf(t *testing.T) {
@@ -40,9 +39,9 @@ func Test_encryptDecrypt(t *testing.T) {
 		plainText string
 	}{
 		// TODO: Add test cases.
-		{"less than 32", "encryption standard"},
-		{"equals 32", "encryption standard encryption "},
-		{"long than 32", "encryption standard encryption standard"},
+		{"less than 32", "standard test"},
+		{"equals 32", "standard test encryption "},
+		{"long than 32", "standard test standard test"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -98,9 +97,9 @@ func Test_signVerify(t *testing.T) {
 		plainText string
 	}{
 		// TODO: Add test cases.
-		{"less than 32", "encryption standard"},
-		{"equals 32", "encryption standard encryption "},
-		{"long than 32", "encryption standard encryption standard"},
+		{"less than 32", "standard test"},
+		{"equals 32", "standard test encryption "},
+		{"long than 32", "standard test standard test"},
 	}
 
 	for _, tt := range tests {
@@ -119,71 +118,84 @@ func Test_signVerify(t *testing.T) {
 	}
 }
 
-func BenchmarkSM2(t *testing.B) {
-	t.ReportAllocs()
-	priv, err := GenerateKey(rand.Reader)
-	msg := []byte("test")
-	if err != nil {
-		t.Fatal(err)
+func benchmarkEncryptSM2(b *testing.B, plaintext string) {
+	b.ReportAllocs()
+	priv, _ := GenerateKey(rand.Reader)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		ciphertext, _ := Encrypt(rand.Reader, &priv.PublicKey, []byte(plaintext), nil)
+		Decrypt(priv, ciphertext)
 	}
+}
+
+func benchmarkEncryptNISTP256(b *testing.B, plaintext string) {
+	b.ReportAllocs()
+	priv, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		ciphertext, _ := Encrypt(rand.Reader, &priv.PublicKey, []byte(plaintext), nil)
+		Decrypt(&PrivateKey{*priv}, ciphertext)
+	}
+}
+
+func BenchmarkLessThan32_NISTP256(b *testing.B) {
+	benchmarkEncryptNISTP256(b, "standard test")
+}
+
+func BenchmarkLessThan32_P256SM2(b *testing.B) {
+	benchmarkEncryptSM2(b, "standard test")
+}
+
+func BenchmarkMoreThan32_NISTP256(b *testing.B) {
+	benchmarkEncryptNISTP256(b, "standard test standard test standard test standard test standard test standard test")
+}
+
+func BenchmarkMoreThan32_P256SM2(b *testing.B) {
+	benchmarkEncryptSM2(b, "standard test standard test standard test standard test standard test standard test")
+}
+
+func BenchmarkTjfoc_LessThan32_Enc(t *testing.B) {
+	t.ReportAllocs()
+	msg := []byte("standard test")
+	priv, _ := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
+	t.ResetTimer()
+	for i := 0; i < t.N; i++ {
+		ciphertext, _ := priv.PublicKey.EncryptAsn1(msg, rand.Reader)
+		priv.DecryptAsn1(ciphertext)
+	}
+}
+
+func BenchmarkTjfoc_MoreThan32_Enc(t *testing.B) {
+	t.ReportAllocs()
+	msg := []byte("standard test standard test standard test standard test standard test standard test")
+	priv, _ := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
+	t.ResetTimer()
+	for i := 0; i < t.N; i++ {
+		ciphertext, _ := priv.PublicKey.EncryptAsn1(msg, rand.Reader)
+		priv.DecryptAsn1(ciphertext)
+	}
+}
+
+func BenchmarkSM2_Sig(t *testing.B) {
+	t.ReportAllocs()
+	priv, _ := GenerateKey(rand.Reader)
+	msg := []byte("standard test")
+
 	hash := sm3.Sm3Sum(msg)
-	r, s, err := Sign(rand.Reader, &priv.PrivateKey, hash[:])
+	r, s, _ := Sign(rand.Reader, &priv.PrivateKey, hash[:])
 	t.ResetTimer()
 	for i := 0; i < t.N; i++ {
 		Verify(&priv.PublicKey, hash[:], r, s) // 密钥验证
 	}
 }
 
-func benchmarkEncrypt(b *testing.B, curve elliptic.Curve, plaintext string) {
-	b.ReportAllocs()
-	for i := 0; i < b.N; i++ {
-		priv, _ := ecdsa.GenerateKey(curve, rand.Reader)
-		Encrypt(rand.Reader, &priv.PublicKey, []byte(plaintext), nil)
-	}
-}
-
-func BenchmarkLessThan32_P256(b *testing.B) {
-	benchmarkEncrypt(b, elliptic.P256(), "encryption standard")
-}
-
-func BenchmarkLessThan32_P256SM2(b *testing.B) {
-	benchmarkEncrypt(b, P256(), "encryption standard")
-}
-
-func BenchmarkMoreThan32_P256(b *testing.B) {
-	benchmarkEncrypt(b, elliptic.P256(), "encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard")
-}
-
-func BenchmarkMoreThan32_P256SM2(b *testing.B) {
-	benchmarkEncrypt(b, P256(), "encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard")
-}
-
-func BenchmarkTjfoc_MoreThan32_P256SM2(t *testing.B) {
+func BenchmarkTjfoc_Sig(t *testing.B) {
 	t.ReportAllocs()
-	msg := []byte("encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard encryption standard")
-	priv, err := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
-	if err != nil {
-		t.Fatal(err)
-	}
+	msg := []byte("standard test")
+	priv, _ := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
 	t.ResetTimer()
 	for i := 0; i < t.N; i++ {
 		sign, _ := priv.Sign(nil, msg, nil) // 签名
-
-		priv.Verify(msg, sign) // 密钥验证
-	}
-}
-
-func BenchmarkTjfoc_LessThan32_P256SM2(t *testing.B) {
-	t.ReportAllocs()
-	msg := []byte("encryption standard")
-	priv, err := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.ResetTimer()
-	for i := 0; i < t.N; i++ {
-		sign, _ := priv.Sign(nil, msg, nil) // 签名
-
-		priv.Verify(msg, sign) // 密钥验证
+		priv.Verify(msg, sign)              // 密钥验证
 	}
 }
