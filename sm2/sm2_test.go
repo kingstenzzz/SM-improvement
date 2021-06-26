@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math/big"
 	"reflect"
+	"strconv"
 	"testing"
 
 	"github.com/kingstenzzz/sm2-improvement/sm3"
@@ -39,9 +40,9 @@ func Test_encryptDecrypt(t *testing.T) {
 		plainText string
 	}{
 		// TODO: Add test cases.
-		{"less than 32", "standard test"},
-		{"equals 32", "standard test encryption "},
-		{"long than 32", "standard test standard test"},
+		{"less than 32", "standardTS"},
+		{"equals 32", "standardTS encryption "},
+		{"long than 32", "standardTS standardTS"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -97,9 +98,9 @@ func Test_signVerify(t *testing.T) {
 		plainText string
 	}{
 		// TODO: Add test cases.
-		{"less than 32", "standard test"},
-		{"equals 32", "standard test encryption "},
-		{"long than 32", "standard test standard test"},
+		{"less than 32", "standardTS"},
+		{"equals 32", "standardTS encryption "},
+		{"long than 32", "standardTS standardTS"},
 	}
 
 	for _, tt := range tests {
@@ -121,7 +122,6 @@ func Test_signVerify(t *testing.T) {
 func benchmarkEncryptSM2(b *testing.B, plaintext string) {
 	b.ReportAllocs()
 	priv, _ := GenerateKey(rand.Reader)
-	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		ciphertext, _ := Encrypt(rand.Reader, &priv.PublicKey, []byte(plaintext), nil)
 		Decrypt(priv, ciphertext)
@@ -139,24 +139,26 @@ func benchmarkEncryptNISTP256(b *testing.B, plaintext string) {
 }
 
 func BenchmarkLessThan32_NISTP256(b *testing.B) {
-	benchmarkEncryptNISTP256(b, "standard test")
+	benchmarkEncryptNISTP256(b, "standardTS")
 }
 
 func BenchmarkLessThan32_P256SM2(b *testing.B) {
-	benchmarkEncryptSM2(b, "standard test")
+	benchmarkEncryptSM2(b, "standardTS")
 }
 
 func BenchmarkMoreThan32_NISTP256(b *testing.B) {
-	benchmarkEncryptNISTP256(b, "standard test standard test standard test standard test standard test standard test")
+	benchmarkEncryptNISTP256(b, "standardTS standardTS standardTS standardTS standardTS standardTS")
 }
 
 func BenchmarkMoreThan32_P256SM2(b *testing.B) {
-	benchmarkEncryptSM2(b, "standard test standard test standard test standard test standard test standard test")
+
+	benchmarkEncryptSM2(b, "standard teststandard teststandard teststandard test")
+
 }
 
 func BenchmarkTjfoc_LessThan32_Enc(t *testing.B) {
 	t.ReportAllocs()
-	msg := []byte("standard test")
+	msg := []byte("standardTS")
 	priv, _ := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
 	t.ResetTimer()
 	for i := 0; i < t.N; i++ {
@@ -167,7 +169,7 @@ func BenchmarkTjfoc_LessThan32_Enc(t *testing.B) {
 
 func BenchmarkTjfoc_MoreThan32_Enc(t *testing.B) {
 	t.ReportAllocs()
-	msg := []byte("standard test standard test standard test standard test standard test standard test")
+	msg := []byte("standardTS standardTS standardTS standardTS standardTS standardTS")
 	priv, _ := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
 	t.ResetTimer()
 	for i := 0; i < t.N; i++ {
@@ -176,10 +178,21 @@ func BenchmarkTjfoc_MoreThan32_Enc(t *testing.B) {
 	}
 }
 
+func BenchmarkDecryptCount(b *testing.B) {
+	msg := "standardTS"
+	for i := 0; i < 10; i++ {
+		msg = msg + msg
+
+		b.Run("len"+strconv.Itoa(len(msg)), func(b *testing.B) {
+			benchmarkEncryptSM2(b, msg)
+		})
+	}
+}
+
 func BenchmarkSM2_Sig(t *testing.B) {
 	t.ReportAllocs()
 	priv, _ := GenerateKey(rand.Reader)
-	msg := []byte("standard test")
+	msg := []byte("standardTS")
 
 	hash := sm3.Sm3Sum(msg)
 	r, s, _ := Sign(rand.Reader, &priv.PrivateKey, hash[:])
@@ -191,11 +204,26 @@ func BenchmarkSM2_Sig(t *testing.B) {
 
 func BenchmarkTjfoc_Sig(t *testing.B) {
 	t.ReportAllocs()
-	msg := []byte("standard test")
+	msg := []byte("standardTS")
 	priv, _ := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
 	t.ResetTimer()
 	for i := 0; i < t.N; i++ {
 		sign, _ := priv.Sign(nil, msg, nil) // 签名
 		priv.Verify(msg, sign)              // 密钥验证
+	}
+}
+func BenchmarkTjfocCount(b *testing.B) {
+	msg := "standardTS"
+	priv, _ := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
+
+	for i := 0; i < 10; i++ {
+		msg = msg + msg + msg + msg
+		b.Run("count"+strconv.Itoa(len(msg)), func(b *testing.B) {
+
+			for i := 0; i < b.N; i++ {
+				sign, _ := priv.Sign(nil, []byte(msg), nil) // 签名
+				priv.Verify([]byte(msg), sign)              // 密钥验证
+			}
+		})
 	}
 }
