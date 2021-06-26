@@ -51,26 +51,25 @@ BenchmarkDecryptCount/len10240-16      	    1351	    874799 ns/op	  226199 B/op	
 >>>同济sm2
 BenchmarkTjfocCount
 BenchmarkTjfocCount/len20
-BenchmarkTjfocCount/len20-16         	     771	   1559843 ns/op
+BenchmarkTjfocCount/len20-16         	     513	   2294138 ns/op
 BenchmarkTjfocCount/len40
-BenchmarkTjfocCount/len40-16         	     780	   1539522 ns/op
+BenchmarkTjfocCount/len40-16         	     520	   2300768 ns/op
 BenchmarkTjfocCount/len80
-BenchmarkTjfocCount/len80-16         	     780	   1540778 ns/op
+BenchmarkTjfocCount/len80-16         	     522	   2309468 ns/op
 BenchmarkTjfocCount/len160
-BenchmarkTjfocCount/len160-16        	     780	   1539471 ns/op
+BenchmarkTjfocCount/len160-16        	     520	   2306176 ns/op
 BenchmarkTjfocCount/len320
-BenchmarkTjfocCount/len320-16        	     772	   1536225 ns/op
+BenchmarkTjfocCount/len320-16        	     516	   2324720 ns/op
 BenchmarkTjfocCount/len640
-BenchmarkTjfocCount/len640-16        	     780	   1541453 ns/op
+BenchmarkTjfocCount/len640-16        	     508	   2354921 ns/op
 BenchmarkTjfocCount/len1280
-BenchmarkTjfocCount/len1280-16       	     775	   1551517 ns/op
+BenchmarkTjfocCount/len1280-16       	     498	   2404278 ns/op
 BenchmarkTjfocCount/len2560
-BenchmarkTjfocCount/len2560-16       	     770	   1564180 ns/op
+BenchmarkTjfocCount/len2560-16       	     478	   2508636 ns/op
 BenchmarkTjfocCount/len5120
-BenchmarkTjfocCount/len5120-16       	     748	   1606161 ns/op
+BenchmarkTjfocCount/len5120-16       	     442	   2711087 ns/op
 BenchmarkTjfocCount/len10240
-BenchmarkTjfocCount/len10240-16      	     715	   1662208 ns/op
-PASS
+BenchmarkTjfocCount/len10240-16      	     382	   3120723 ns/op
 
 Process finished with exit code 0
 
