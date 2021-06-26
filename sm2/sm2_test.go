@@ -218,7 +218,7 @@ func BenchmarkTjfocCount(b *testing.B) {
 
 	for i := 0; i < 10; i++ {
 		msg = msg + msg + msg + msg
-		b.Run("count"+strconv.Itoa(len(msg)), func(b *testing.B) {
+		b.Run("len"+strconv.Itoa(len(msg)), func(b *testing.B) {
 
 			for i := 0; i < b.N; i++ {
 				sign, _ := priv.Sign(nil, []byte(msg), nil) // 签名
