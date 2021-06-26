@@ -1,6 +1,5 @@
 
 *sm2-improvement*
-
 **Benchmark**
 ~~~~
 goos: windows
