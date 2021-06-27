@@ -15,7 +15,9 @@ package sm3
 
 import (
 	"fmt"
+	tjfoc "github.com/tjfoc/gmsm/sm3"
 	"io/ioutil"
+	"strconv"
 	"testing"
 )
 
@@ -38,10 +40,46 @@ func byteToString(b []byte) string {
 
 func BenchmarkSm3(t *testing.B) {
 	t.ReportAllocs()
-	msg := ReadFile("./1.jpg")
+	msg := "standardTS"
 	var sm3 SM3
 	for i := 0; i < t.N; i++ {
 		// Sm3Sum(msg)
-		sm3.Write(msg)
+		sm3.Write([]byte(msg))
+	}
+}
+
+func BenchmarkSm3_Tjfoc(t *testing.B) {
+	t.ReportAllocs()
+	msg := "standardTS"
+	var sm3 tjfoc.SM3
+	for i := 0; i < t.N; i++ {
+		// Sm3Sum(msg)
+		sm3.Write([]byte(msg))
+	}
+}
+
+func BenchmarkSM3_TjfocCount(b *testing.B) {
+	msg := "standardTS"
+	var sm3 SM3
+	for i := 0; i < 10; i++ {
+		msg = msg + msg
+		b.Run("len"+strconv.Itoa(len(msg)), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				sm3.Write([]byte(msg))
+			}
+		})
+	}
+}
+
+func BenchmarkSM3Count(b *testing.B) {
+	msg := "standardTS"
+	var sm3 SM3
+	for i := 0; i < 10; i++ {
+		msg = msg + msg
+		b.Run("len"+strconv.Itoa(len(msg)), func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				sm3.Write([]byte(msg))
+			}
+		})
 	}
 }

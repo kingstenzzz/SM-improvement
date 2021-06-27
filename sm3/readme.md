@@ -38,4 +38,63 @@
         C←B<<<9
         ......
     }
-        
+
+~~~
+goos: windows
+goarch: amd64
+pkg: github.com/kingstenzzz/sm2-improvement/sm3
+cpu: Intel(R) Core(TM) i7-10700 CPU @ 2.90GHz
+BenchmarkSm3
+BenchmarkSm3-16                 18065758                66.40 ns/op           19 B/op          0 allocs/op
+>>>同济库SM3
+BenchmarkSm3_Tjfoc
+BenchmarkSm3_Tjfoc-16           13905240                86.84 ns/op           19 B/op          0 allocs/op
+
+BenchmarkSM3Count
+BenchmarkSM3Count/len20
+BenchmarkSM3Count/len20-16                      10554516               114.4 ns/op            38 B/op          0 allocs/op
+BenchmarkSM3Count/len40
+BenchmarkSM3Count/len40-16                       5208697               229.7 ns/op           128 B/op          1 allocs/op
+BenchmarkSM3Count/len80
+BenchmarkSM3Count/len80-16                       2912168               409.9 ns/op           200 B/op          2 allocs/op
+BenchmarkSM3Count/len160
+BenchmarkSM3Count/len160-16                      1563560               765.3 ns/op           368 B/op          2 allocs/op
+BenchmarkSM3Count/len320
+BenchmarkSM3Count/len320-16                       751987              1507 ns/op             672 B/op          2 allocs/op
+BenchmarkSM3Count/len640
+BenchmarkSM3Count/len640-16                       412875              2907 ns/op            1344 B/op          2 allocs/op
+BenchmarkSM3Count/len1280
+BenchmarkSM3Count/len1280-16                      207453              5720 ns/op            2688 B/op          2 allocs/op
+BenchmarkSM3Count/len2560
+BenchmarkSM3Count/len2560-16                      105544             11330 ns/op            5376 B/op          2 allocs/op
+BenchmarkSM3Count/len5120
+BenchmarkSM3Count/len5120-16                       52996             22564 ns/op           10752 B/op          2 allocs/op
+BenchmarkSM3Count/len10240
+BenchmarkSM3Count/len10240-16                      26797             44561 ns/op           21120 B/op          2 allocs/op
+
+>>>同济库SM3
+BenchmarkSM3_TjfocCount
+BenchmarkSM3_TjfocCount/len20
+BenchmarkSM3_TjfocCount/len20-16                10505479               114.7 ns/op            38 B/op          0 allocs/op
+BenchmarkSM3_TjfocCount/len40
+BenchmarkSM3_TjfocCount/len40-16                 5144863               233.2 ns/op           122 B/op          1 allocs/op
+BenchmarkSM3_TjfocCount/len80
+BenchmarkSM3_TjfocCount/len80-16                 2956294               408.9 ns/op           184 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len160
+BenchmarkSM3_TjfocCount/len160-16                1589409               766.9 ns/op           336 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len320
+BenchmarkSM3_TjfocCount/len320-16                 802132              1496 ns/op             640 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len640
+BenchmarkSM3_TjfocCount/len640-16                 414898              2909 ns/op            1280 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len1280
+BenchmarkSM3_TjfocCount/len1280-16                207450              5709 ns/op            2560 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len2560
+BenchmarkSM3_TjfocCount/len2560-16                105448             11302 ns/op            5376 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len5120
+BenchmarkSM3_TjfocCount/len5120-16                 53104             22453 ns/op           10752 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len10240
+BenchmarkSM3_TjfocCount/len10240-16                26857             44691 ns/op           20480 B/op          2 allocs/op
+
+
+
+~~~
