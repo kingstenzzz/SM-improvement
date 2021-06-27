@@ -15,10 +15,11 @@ package sm3
 
 import (
 	"fmt"
-	tjfoc "github.com/tjfoc/gmsm/sm3"
 	"io/ioutil"
 	"strconv"
 	"testing"
+
+	tjfoc "github.com/tjfoc/gmsm/sm3"
 )
 
 func ReadFile(filePath string) []byte {
@@ -60,7 +61,7 @@ func BenchmarkSm3_Tjfoc(t *testing.B) {
 
 func BenchmarkSM3_TjfocCount(b *testing.B) {
 	msg := "standardTS"
-	var sm3 SM3
+	var sm3 tjfoc.SM3
 	for i := 0; i < 10; i++ {
 		msg = msg + msg
 		b.Run("len"+strconv.Itoa(len(msg)), func(b *testing.B) {
