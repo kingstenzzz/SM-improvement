@@ -73,27 +73,29 @@ BenchmarkSM3Count/len10240
 BenchmarkSM3Count/len10240-16                      26797             44561 ns/op           21120 B/op          2 allocs/op
 
 >>>同济库SM3
+BenchmarkSm3_Tjfoc
+BenchmarkSm3_Tjfoc-16           13990938                86.47 ns/op           19 B/op          0 allocs/op
 BenchmarkSM3_TjfocCount
 BenchmarkSM3_TjfocCount/len20
-BenchmarkSM3_TjfocCount/len20-16                10505479               114.7 ns/op            38 B/op          0 allocs/op
+BenchmarkSM3_TjfocCount/len20-16                 8021395               150.3 ns/op            38 B/op          0 allocs/op
 BenchmarkSM3_TjfocCount/len40
-BenchmarkSM3_TjfocCount/len40-16                 5144863               233.2 ns/op           122 B/op          1 allocs/op
+BenchmarkSM3_TjfocCount/len40-16                 3919087               306.6 ns/op           122 B/op          1 allocs/op
 BenchmarkSM3_TjfocCount/len80
-BenchmarkSM3_TjfocCount/len80-16                 2956294               408.9 ns/op           184 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len80-16                 2223607               536.0 ns/op           184 B/op          2 allocs/op
 BenchmarkSM3_TjfocCount/len160
-BenchmarkSM3_TjfocCount/len160-16                1589409               766.9 ns/op           336 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len160-16                1201780               998.0 ns/op           336 B/op          2 allocs/op
 BenchmarkSM3_TjfocCount/len320
-BenchmarkSM3_TjfocCount/len320-16                 802132              1496 ns/op             640 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len320-16                 633254              1954 ns/op             672 B/op          2 allocs/op
 BenchmarkSM3_TjfocCount/len640
-BenchmarkSM3_TjfocCount/len640-16                 414898              2909 ns/op            1280 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len640-16                 316636              3821 ns/op            1344 B/op          2 allocs/op
 BenchmarkSM3_TjfocCount/len1280
-BenchmarkSM3_TjfocCount/len1280-16                207450              5709 ns/op            2560 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len1280-16                156260              7634 ns/op            2688 B/op          2 allocs/op
 BenchmarkSM3_TjfocCount/len2560
-BenchmarkSM3_TjfocCount/len2560-16                105448             11302 ns/op            5376 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len2560-16                 77114             15721 ns/op            5376 B/op          2 allocs/op
 BenchmarkSM3_TjfocCount/len5120
-BenchmarkSM3_TjfocCount/len5120-16                 53104             22453 ns/op           10752 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len5120-16                 37132             31479 ns/op           10752 B/op          2 allocs/op
 BenchmarkSM3_TjfocCount/len10240
-BenchmarkSM3_TjfocCount/len10240-16                26857             44691 ns/op           20480 B/op          2 allocs/op
+BenchmarkSM3_TjfocCount/len10240-16                19066             62356 ns/op           21120 B/op          2 allocs/op
 
 
 
