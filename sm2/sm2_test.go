@@ -181,7 +181,7 @@ func BenchmarkTjfoc_MoreThan32_Enc(t *testing.B) {
 func BenchmarkDecryptCount(b *testing.B) {
 	msg := "standardTS"
 	for i := 0; i < 10; i++ {
-		msg = msg + msg
+		msg = msg + msg + msg
 
 		b.Run("len"+strconv.Itoa(len(msg)), func(b *testing.B) {
 			benchmarkEncryptSM2(b, msg)
@@ -215,14 +215,12 @@ func BenchmarkTjfoc_Sig(t *testing.B) {
 func BenchmarkTjfocCount(b *testing.B) {
 	msg := "standardTS"
 	priv, _ := tjfoc_SM2.GenerateKey(nil) // 生成密钥对
-
 	for i := 0; i < 10; i++ {
-		msg = msg + msg + msg + msg
+		msg = msg + msg
 		b.Run("len"+strconv.Itoa(len(msg)), func(b *testing.B) {
-
 			for i := 0; i < b.N; i++ {
-				sign, _ := priv.Sign(nil, []byte(msg), nil) // 签名
-				priv.Verify([]byte(msg), sign)              // 密钥验证
+				ciphertext, _ := priv.PublicKey.EncryptAsn1([]byte(msg), rand.Reader)
+				priv.DecryptAsn1(ciphertext)
 			}
 		})
 	}
