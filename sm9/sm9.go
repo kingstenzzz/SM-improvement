@@ -11,9 +11,9 @@ import (
 	"math"
 	"math/big"
 
-	"github.com/kingstenzzz/SM-improvemnt/sm9/sm9curve"
+	"github.com/kingstenzzz/SM-improvement/sm3"
+	"github.com/kingstenzzz/SM-improvement/sm9/sm9curve"
 	"github.com/pkg/errors"
-	"github.com/xlcetc/cryptogm/sm/sm3"
 )
 
 type hashMode int
@@ -60,7 +60,7 @@ func hash(z []byte, n *big.Int, h hashMode) *big.Int {
 		buf := make([]byte, 4)
 		binary.BigEndian.PutUint32(buf, uint32(ct)) //将ct转为byte
 		msg = append(msg, buf...)
-		hai := sm3.SumSM3(msg)
+		hai := sm3.Sm3Sum(msg)
 		ct++
 		//整数&&
 		if float64(hlen)/256 == float64(int64(hlen/256)) &&

@@ -5,7 +5,7 @@ import (
 
 	"math/big"
 
-	"github.com/kingstenzzz/SM-improvemnt/sm9/sm9curve"
+	"github.com/kingstenzzz/SM-improvement/sm9/sm9curve"
 	"github.com/pkg/errors"
 )
 
