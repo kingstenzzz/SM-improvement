@@ -1,6 +1,7 @@
 ## sm9-improvement
 
-根据论文《一种基于FPGA的SM9快速实现方法》、《一种SM9数字签名及验证算法的快速实现方法》进行部分优化，同时利用https://github.com/xlcetc/cryptogm提供的sm9曲线包提高性能。原曲线包为https://github.com/cloudflare/bn256
+根据论文《一种基于FPGA的SM9快速实现方法》、《一种SM9数字签名及验证算法的快速实现方法》进行部分优化，同时利用https://github.com/xlcetc/cryptogm 提供的sm9曲线包提高性能。原曲线包为https://github.com/cloudflare/bn256 
+
 
 后期若将该项目库中的sm3一同使用或许效果更佳
 
