@@ -14,29 +14,11 @@ limitations under the License.
 package sm3
 
 import (
-	"fmt"
-	tjfoc "github.com/tjfoc/gmsm/sm3"
-	"io/ioutil"
 	"strconv"
 	"testing"
+
+	tjfoc "github.com/tjfoc/gmsm/sm3"
 )
-
-func ReadFile(filePath string) []byte {
-	content, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		fmt.Println("Read error")
-	}
-	return content
-}
-
-func byteToString(b []byte) string {
-	ret := ""
-	for i := 0; i < len(b); i++ {
-		ret += fmt.Sprintf("%02x", b[i])
-	}
-	fmt.Println("ret = ", ret)
-	return ret
-}
 
 func BenchmarkSm3(t *testing.B) {
 	t.ReportAllocs()
