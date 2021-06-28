@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"crypto/rand"
 	"fmt"
-	"github.com/kingstenzzz/sm2-improvement/sm2"
+	"github.com/kingstenzzz/SM-improvement/sm2"
 	"log"
 )
 

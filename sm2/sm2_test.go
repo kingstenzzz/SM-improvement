@@ -6,13 +6,12 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"github.com/kingstenzzz/SM-improvement/sm3"
+	tjfoc_SM2 "github.com/tjfoc/gmsm/sm2" //引入同济库对比
 	"math/big"
 	"reflect"
 	"strconv"
 	"testing"
-
-	"github.com/kingstenzzz/sm2-improvement/sm3"
-	tjfoc_SM2 "github.com/tjfoc/gmsm/sm2" //引入同济库对比
 )
 
 func Test_kdf(t *testing.T) {
