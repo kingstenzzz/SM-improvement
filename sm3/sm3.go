@@ -15,9 +15,7 @@ package sm3
 
 import (
 	"encoding/binary"
-	"fmt"
 	"hash"
-	"time"
 )
 
 // ti为压缩函数64轮中每一轮 Ti<<<i 的结果
@@ -291,13 +289,4 @@ func Sm3Sum(data []byte) []byte {
 	sm3.Reset()
 	_, _ = sm3.Write(data)
 	return sm3.Sum(nil)
-}
-
-//@brief：耗时统计函数
-func timeCost(s string) func() {
-	start := time.Now()
-	return func() {
-		tc := time.Since(start)
-		fmt.Printf(s+": time cost = %v\n", tc)
-	}
 }
