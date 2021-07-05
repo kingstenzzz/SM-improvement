@@ -4,6 +4,7 @@
 ```bash
 go get -u github.com/kingstenzzz/SM-improvement
 ```
+### SM2示例
 - go package： `github.com/kingstenzzz/SM-improvement/sm2`
 ```Go
 	msg := []byte("test encryption")
