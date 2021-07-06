@@ -1,4 +1,4 @@
-# 国密GM/T Go API使用说明
+# 国密Go API使用说明
 ## Go包安装
 
 ```bash
