@@ -1,4 +1,4 @@
-# 国密API使用说明
+# 国密Go API使用说明
 ## Go包安装
 
 ```bash
@@ -34,6 +34,15 @@ go get -u github.com/kingstenzzz/SM-improvement
 	}
 	fmt.Println("签名验证成功")
 ```
+## SM3密码杂凑算法示例
+
+```Go
+    data := "test"
+    h := sm3.New()
+    h.Write([]byte(data))
+    sum := h.Sum(nil)
+    fmt.Printf("digest value is: %x\n",sum)
+```
 ### SM9 示例
 ```go
 	mk, err := sm9.MasterKeyGen(rand.Reader) //生成系统签名主密钥对
@@ -60,4 +69,10 @@ go get -u github.com/kingstenzzz/SM-improvement
 		log.Fatal("签名验证失败")
 	}
 	fmt.Println("签名验证成功")
+```
+
+
+### 具体功能测试代码参考
+```Go
+github.com/kingstenzzz/SM-improvement/sm3/sm3_test.go  //sm3算法
 ```
