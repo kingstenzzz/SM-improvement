@@ -34,4 +34,30 @@ go get -u github.com/kingstenzzz/SM-improvement
 	}
 	fmt.Println("签名验证成功")
 ```
-[README.md](https://github.com/LYL20200307/SM-improvement/files/6767097/README.md)
+### SM9 示例
+```
+	mk, err := sm9.MasterKeyGen(rand.Reader) //生成系统签名主密钥对
+	if err != nil {
+		log.Fatalf("mk gen failed:%s", err)
+	}
+	var hid byte = 1//签名私钥生成函数识别符
+	var uid = []byte("Alice")//用户标识
+
+	uk, err := sm9.UserKeyGen(mk, uid, hid)//生成用户签名私钥
+	if err != nil {
+		log.Fatalf("uk gen failed:%s", err)
+	}
+
+	msg := []byte("message")
+
+	sig, err := sm9.NewSign(uk, &mk.MasterPubKey, msg)
+	if err != nil {
+		log.Fatalf("sm9 签名失败:%s", err)
+	}
+
+	result := sm9.NewVerify(sig, msg, uid, hid, &mk.MasterPubKey)
+	if !result {
+		log.Fatal("签名验证失败")
+	}
+	fmt.Println("签名验证成功")
+```
