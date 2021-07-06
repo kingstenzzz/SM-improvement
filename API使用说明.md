@@ -43,6 +43,42 @@ go get -u github.com/kingstenzzz/SM-improvement
     sum := h.Sum(nil)
     fmt.Printf("digest value is: %x\n",sum)
 ```
+
+## SM4分组密码算法 - 
+
+- go package：`github.com/kingstenzzz/SM-improvement/sm4`
+
+### 代码示例
+
+```Go
+    import  "crypto/cipher"
+    import  "github.com/kingstenzzz/SM-improvement/sm4"
+    import "fmt"
+
+    func main(){
+    key := []byte("1234567890abcdef")
+	fmt.Printf("key = %v\n", key)
+	data := []byte{0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef, 0xfe, 0xdc, 0xba, 0x98, 0x76, 0x54, 0x32, 0x10}
+    iv := []byte("0000000000000000")
+	err = SetIV(iv)//设置SM4算法实现的IV值,不设置则使用默认值
+	ecbMsg, err :=sm4.Sm4Ecb(key, data, true)   //sm4Ecb模式pksc7填充加密
+	if err != nil {
+		t.Errorf("sm4 enc error:%s", err)
+		return
+	}
+	fmt.Printf("ecbMsg = %x\n", ecbMsg)
+	ecbDec, err := sm4.Sm4Ecb(key, ecbMsg, false)  //sm4Ecb模式pksc7填充解密
+	if err != nil {
+		t.Errorf("sm4 dec error:%s", err)
+		return
+	}
+	fmt.Printf("ecbDec = %x\n", ecbDec)
+    }
+```
+
+
+
+
 ### SM9 示例
 ```go
 	mk, err := sm9.MasterKeyGen(rand.Reader) //生成系统签名主密钥对
@@ -74,5 +110,8 @@ go get -u github.com/kingstenzzz/SM-improvement
 
 ### 具体功能测试代码参考
 ```Go
+github.com/kingstenzzz/SM-improvement/sm2/sm2_test.go  //sm3算法
 github.com/kingstenzzz/SM-improvement/sm3/sm3_test.go  //sm3算法
+github.com/kingstenzzz/SM-improvement/sm4/sm4_test.go  //sm3算法
+github.com/kingstenzzz/SM-improvement/sm9/sm9_test.go  //sm3算法
 ```
