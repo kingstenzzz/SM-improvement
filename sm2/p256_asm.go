@@ -34,10 +34,12 @@ var (
 	precomputeOnce  sync.Once
 )
 
+//SM2曲线参数
 func initP256() {
 	// 2**256 - 2**224 - 2**96 + 2**64 - 1
 	p256.CurveParams = &elliptic.CurveParams{Name: "sm2p256v1"}
 	p256.P, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF", 16)
+	//值域
 	p256.N, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123", 16)
 	p256.B, _ = new(big.Int).SetString("28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93", 16)
 	p256.Gx, _ = new(big.Int).SetString("32C4AE2C1F1981195F9904466A39C9948FE30BBFF2660BE1715A4589334C74C7", 16)
@@ -124,7 +126,7 @@ var (
 // 1111111111111111111111111111111111111111111111111111111111111111
 // 0111001000000011110111110110101100100001110001100000010100101011
 // 0101001110111011111101000000100100111001110101010100000100100001
-//
+//取倒数
 func (curve p256Curve) Inverse(k *big.Int) *big.Int {
 	if k.Sign() < 0 {
 		// This should never happen.
@@ -365,7 +367,16 @@ func (p *p256Point) CopyConditional(src *p256Point, v int) {
 	}
 }
 
-// p256Inverse sets out to in^-1 mod p.
+// p256Inverse sets out to in^-1 mod p.取逆
+//// p256Invert calculates |out| = |in|^{-1}
+////.费马小定理求逆元
+////平方和乘法
+//// Based on Fermat's Little Theorem:
+////   a^p = a (mod p)
+////   a^{p-1} = 1 (mod p)
+////   a^{p-2} = a^{-1} (mod p)
+////凑出a^(p-2)，右边就是逆元
+//// p=2^256-2^224-2^96+2^64-1
 func p256Inverse(out, in []uint64) {
 	var stack [8 * 4]uint64
 	p2 := stack[4*0 : 4*0+4]

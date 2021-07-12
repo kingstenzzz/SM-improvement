@@ -8,6 +8,7 @@ import (
 	"math/big"
 )
 
+//非汇编
 // See https://www.imperialviolet.org/2010/12/04/ecc.html ([1]) for background.
 
 type p256Curve struct {
@@ -19,9 +20,11 @@ var (
 
 	// RInverse contains 1/R mod p - the inverse of the Montgomery constant
 	// (2**257).
+	//蒙哥马利常数
 	p256RInverse *big.Int
 )
 
+//SM2曲线参数
 func initP256() {
 	p256Params = &elliptic.CurveParams{Name: "sm2p256v1"}
 	// 2**256 - 2**224 - 2**96 + 2**64 - 1
@@ -121,6 +124,7 @@ var (
 	p256b = [p256Limbs]uint32{0x1781ba84, 0xd230632, 0x1537ab90, 0x9bcd74d, 0xe1e38e7, 0x5417a94, 0x12149e60, 0x17441c5, 0x481fc31}
 )
 
+//预计算参数
 // p256Precomputed contains precomputed values to aid the calculation of scalar
 // multiples of the base point, G. It's actually two, equal length, tables
 // concatenated.
@@ -338,7 +342,7 @@ func p256ReduceCarry(inout *[p256Limbs]uint32, carry uint32) {
 }
 
 // p256Sum sets out = in+in2.
-//
+//加法
 // On entry, in[i]+in2[i] must not overflow a 32-bit word.
 // On exit: out[0,2,...] < 2**30, out[1,3,...] < 2**29
 func p256Sum(out, in, in2 *[p256Limbs]uint32) {
@@ -364,6 +368,7 @@ func p256Sum(out, in, in2 *[p256Limbs]uint32) {
 }
 
 // p256Zero31 is 0 mod p.
+//p256Zero31的求解
 // {two31m3, two30m2, two31p10m2, two30m13m2, two31m2, two30m2, two31m2, two30m27m2, two31m2}
 var p256Zero31 = [p256Limbs]uint32{0x7FFFFFF8, 0x3FFFFFFC, 0x800003FC, 0x3FFFDFFC, 0x7FFFFFFC, 0x3FFFFFFC, 0x7FFFFFFC, 0x37FFFFFC, 0x7FFFFFFC}
 
@@ -419,7 +424,7 @@ func p256GetZero31(out *[p256Limbs]uint32) {
 }
 
 // p256Diff sets out = in-in2.
-//
+//减法
 // On entry: in[0,2,...] < 2**30, in[1,3,...] < 2**29 and
 //           in2[0,2,...] < 2**30, in2[1,3,...] < 2**29.
 // On exit: out[0,2,...] < 2**30, out[1,3,...] < 2**29.
@@ -447,6 +452,7 @@ func p256Diff(out, in, in2 *[p256Limbs]uint32) {
 	p256ReduceCarry(out, carry)
 }
 
+//蒙哥马利约减,简化除法运算，转化成位运算
 // p256ReduceDegree sets out = tmp/R mod p where tmp contains 64-bit words with
 // the same 29,28,... bit positions as a field element.
 //
@@ -841,14 +847,16 @@ func p256Assign(out, in *[p256Limbs]uint32) {
 }
 
 // p256Invert calculates |out| = |in|^{-1}
-//
+//.费马小定理求逆元
+//平方和乘法
 // Based on Fermat's Little Theorem:
 //   a^p = a (mod p)
 //   a^{p-1} = 1 (mod p)
 //   a^{p-2} = a^{-1} (mod p)
+//凑出a^(p-2)，右边就是逆元
+// p=2^256-2^224-2^96+2^64-1
 func p256Invert(out, in *[p256Limbs]uint32) {
 	var ftmp, ftmp2 [p256Limbs]uint32
-
 	// each e_I will hold |in|^{2^I - 1}
 	var e2, e4, e8, e16, e32, e64 [p256Limbs]uint32
 	// 2^32-2
@@ -940,6 +948,7 @@ func p256Invert(out, in *[p256Limbs]uint32) {
 	} // 2^64 - 2^2
 	p256Mul(&ftmp2, in, &ftmp2) // 2^64 - 3
 	p256Mul(out, &ftmp2, &ftmp) // 2^256 - 2^224 - 2^96 + 2^64 - 3
+
 }
 
 // p256Scalar3 sets out=3*out.
