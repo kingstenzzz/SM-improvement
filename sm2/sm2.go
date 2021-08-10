@@ -129,7 +129,8 @@ var (
 
 // P256 init and return the singleton
 func P256() elliptic.Curve {
-	initonce.Do(initP256)
+	initP256()
+	//initonce.Do(initP256)
 	return p256
 }
 

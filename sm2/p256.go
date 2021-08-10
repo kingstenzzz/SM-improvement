@@ -1,4 +1,4 @@
-// +build !amd64
+// +build amd64
 
 package sm2
 
@@ -6,6 +6,7 @@ import (
 	"crypto/elliptic"
 	"fmt"
 	"math/big"
+	"sync"
 )
 
 //非汇编
@@ -14,6 +15,11 @@ import (
 type p256Curve struct {
 	*elliptic.CurveParams
 }
+
+var (
+	p256           p256Curve
+	precomputeOnce sync.Once
+)
 
 var (
 	p256Params *elliptic.CurveParams
@@ -26,24 +32,17 @@ var (
 
 //SM2曲线参数
 func initP256() {
-	p256Params = &elliptic.CurveParams{Name: "sm2p256v1"}
 	// 2**256 - 2**224 - 2**96 + 2**64 - 1
-	p256Params.P, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF", 16)
-	p256Params.N, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123", 16)
-	p256Params.B, _ = new(big.Int).SetString("28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93", 16)
-	p256Params.Gx, _ = new(big.Int).SetString("32C4AE2C1F1981195F9904466A39C9948FE30BBFF2660BE1715A4589334C74C7", 16)
-	p256Params.Gy, _ = new(big.Int).SetString("BC3736A2F4F6779C59BDCEE36B692153D0A9877CC62A474002DF32E52139F0A0", 16)
-	p256Params.BitSize = 256
-
-	// ModeInverse(2**257, P)
-	// p256RInverse = big.NewInt(0)
-	// r, _ := new(big.Int).SetString("20000000000000000000000000000000000000000000000000000000000000000", 16)
-	// p256RInverse.ModInverse(r, p256.P)
-	// fmt.Printf("%s\n", hex.EncodeToString(p256RInverse.Bytes()))
+	p256.CurveParams = &elliptic.CurveParams{Name: "sm2p256v1"}
+	p256.P, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFF", 16)
+	//值域
+	p256.N, _ = new(big.Int).SetString("FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFF7203DF6B21C6052B53BBF40939D54123", 16)
+	p256.B, _ = new(big.Int).SetString("28E9FA9E9D9F5E344D5A9E4BCF6509A7F39789F515AB8F92DDBCBD414D940E93", 16)
+	p256.Gx, _ = new(big.Int).SetString("32C4AE2C1F1981195F9904466A39C9948FE30BBFF2660BE1715A4589334C74C7", 16)
+	p256.Gy, _ = new(big.Int).SetString("BC3736A2F4F6779C59BDCEE36B692153D0A9877CC62A474002DF32E52139F0A0", 16)
+	p256.BitSize = 256
 	p256RInverse, _ = new(big.Int).SetString("7ffffffd80000002fffffffe000000017ffffffe800000037ffffffc80000002", 16)
 
-	// Arch-specific initialization, i.e. let a platform dynamically pick a P256 implementation
-	initP256Arch()
 }
 
 func (curve p256Curve) Params() *elliptic.CurveParams {
@@ -234,10 +233,11 @@ var p256Precomputed = [p256Limbs * 2 * 15 * 2]uint32{
 	0x11902a0, 0x6c29cc9, 0x1d5ffbe6, 0xdb0b4c7, 0x10144c14, 0x2f2b719, 0x301189, 0x2343336, 0xa0bf2ac,
 }
 
-func precompute(params *elliptic.CurveParams, base *big.Int) {
+//预计算
+func Precompute(params *elliptic.CurveParams, base *big.Int) {
 	// 1/32/64/96/128/160/192/224
 	var values [4]*big.Int
-
+	//0 64 128 192 256
 	values[0] = base
 	for i := 1; i < 4; i++ {
 		values[i] = new(big.Int)
