@@ -127,6 +127,13 @@ func benchmarkEncryptSM2(b *testing.B, plaintext string) {
 	}
 }
 
+func TestEncryptSM2(t *testing.T) {
+	priv, _ := GenerateKey(rand.Reader)
+	plaintext := "test"
+	ciphertext, _ := Encrypt(rand.Reader, &priv.PublicKey, []byte(plaintext), nil)
+	Decrypt(priv, ciphertext)
+}
+
 func benchmarkEncryptNISTP256(b *testing.B, plaintext string) {
 	b.ReportAllocs()
 	priv, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
@@ -223,4 +230,8 @@ func BenchmarkTjfocCount(b *testing.B) {
 			}
 		})
 	}
+}
+
+func TestPrecom(t *testing.T) {
+	//Precompute(p256,1)
 }
